@@ -2,13 +2,14 @@
 
 import program from "commander";
 import * as abswap from "./abswap";
+import version from "./version";
 
 let initialize = false;
 let path = "";
 
 program
   .name("abswap")
-  .version("0.0.0")
+  .version(version)
   .option("--init", "initialize a path for a/b swap", () => (initialize = true))
   .arguments("<path>")
   .action(arg => {
