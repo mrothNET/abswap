@@ -32,5 +32,10 @@
   },
   "dependencies": {
     "commander": "^2.20.0"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mrothNET/abswap.git"
+  },
+  "homepage": "https://github.com/mrothNET/abswap"
 }
