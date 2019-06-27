@@ -8,17 +8,20 @@
     "lib/**/*"
   ],
   "bin": {
-    "abswap": "lib/index.js"
+    "abswap": "lib/cli.js"
   },
+  "main": "lib/abswap.js",
   "scripts": {
     "build": "tsc",
-    "test": "jest -all",
+    "test": "jest --all",
+    "watch": "jest --watch",
     "clean": "rimraf lib",
     "format": "prettier --write 'src/**/*.ts'",
     "lint": "tslint -p ."
   },
   "devDependencies": {
     "@types/jest": "^24.0.15",
+    "@types/node": "^12.0.10",
     "jest": "^24.8.0",
     "prettier": "^1.18.2",
     "rimraf": "^2.6.3",
@@ -26,5 +29,8 @@
     "tslint": "^5.18.0",
     "tslint-config-prettier": "^1.18.0",
     "typescript": "^3.5.2"
+  },
+  "dependencies": {
+    "commander": "^2.20.0"
   }
 }
