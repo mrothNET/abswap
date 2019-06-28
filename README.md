@@ -33,12 +33,15 @@ Of course, calling `abswap` again swaps back again.
 ## Features
 
   * Works with directories and regular files.
+  * Maintains always a valid symlink for the activated selection (atomic behavior).
   * ...
 
 
 ## Install
 
-TBW.
+|              npm              |           yarn           |
+|:-----------------------------:|:------------------------:|
+| `npm install --global abswap` | `yarn global add abswap` |
 
 
 ## Usage
