@@ -1,33 +1,11 @@
 # abswap
 
-> Swap a/b directories or files using symlinks.
+*Swap a/b directories or files using symlinks.*
 
 
-## Example
+![Screencast](./assets/screencast-example.gif)
 
-Initialize:
 
-```console
-$ abswap --init example
-$ ls -l
-lrwxrwxrwx 1 mroth mroth    9 Jun 26 11:30 example -> example.a
-drwxrwxr-x 2 mroth mroth 4096 Jun 26 11:30 example.a
-drwxrwxr-x 2 mroth mroth 4096 Jun 26 11:30 example.b
-lrwxrwxrwx 1 mroth mroth    9 Jun 26 11:30 example.inactive -> example.b
-```
-
-Swap directories:
-
-```console
-$ abswap example
-$ ls -l
-lrwxrwxrwx 1 mroth mroth    9 Jun 26 11:32 example -> example.b
-drwxrwxr-x 2 mroth mroth 4096 Jun 26 11:30 example.a
-drwxrwxr-x 2 mroth mroth 4096 Jun 26 11:30 example.b
-lrwxrwxrwx 1 mroth mroth    9 Jun 26 11:32 example.inactive -> example.a
-```
-
-Of course, calling `abswap` again swaps back again.
 
 
 ## Features
