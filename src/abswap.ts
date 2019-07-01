@@ -1,8 +1,7 @@
 import { readlinkSync, unlinkSync } from "fs";
-import { basename } from "path";
 import { mkdirp, symlink } from "./filesystem";
 import { isDirectory, isDirectoryOrMissing, isSymlink, isSymlinkOrMissing } from "./filetype";
-import names from "./names";
+import Names from "./names";
 
 enum Selection {
   A = "A",
@@ -10,39 +9,39 @@ enum Selection {
 }
 
 export function init(path: string): void {
-  const { a, b, active, inactive } = names(path);
+  const names = new Names(path);
 
-  verifyExistingPath(isSymlinkOrMissing, active);
-  verifyExistingPath(isSymlinkOrMissing, inactive);
-  verifyExistingPath(isDirectoryOrMissing, a);
-  verifyExistingPath(isDirectoryOrMissing, b);
+  verifyExistingPath(isSymlinkOrMissing, names.active);
+  verifyExistingPath(isSymlinkOrMissing, names.inactive);
+  verifyExistingPath(isDirectoryOrMissing, names.a);
+  verifyExistingPath(isDirectoryOrMissing, names.b);
 
-  mkdirp(a);
-  mkdirp(b);
+  mkdirp(names.a);
+  mkdirp(names.b);
 
-  symlink(basename(a), active);
-  symlink(basename(b), inactive);
+  symlink(names.basenameA, names.active);
+  symlink(names.basenameB, names.inactive);
 }
 
 export function swap(path: string): void {
-  const { a, b, active, inactive } = names(path);
+  const names = new Names(path);
 
-  verifyRequiredPath(isSymlink, active);
-  verifyRequiredPath(isSymlink, inactive);
-  verifyRequiredPath(isDirectory, a);
-  verifyRequiredPath(isDirectory, b);
+  verifyRequiredPath(isSymlink, names.active);
+  verifyRequiredPath(isSymlink, names.inactive);
+  verifyRequiredPath(isDirectory, names.a);
+  verifyRequiredPath(isDirectory, names.b);
 
-  switch (currentSelection(path)) {
+  switch (currentSelection(names)) {
     case Selection.A:
-      unlinkSync(inactive);
-      symlink(basename(b), active);
-      symlink(basename(a), inactive);
+      unlinkSync(names.inactive);
+      symlink(names.basenameB, names.active);
+      symlink(names.basenameA, names.inactive);
       break;
 
     case Selection.B:
-      unlinkSync(inactive);
-      symlink(basename(a), active);
-      symlink(basename(b), inactive);
+      unlinkSync(names.inactive);
+      symlink(names.basenameA, names.active);
+      symlink(names.basenameB, names.inactive);
       break;
   }
 }
@@ -59,25 +58,20 @@ function verifyRequiredPath(pathTest: (path: string) => boolean, path: string): 
   }
 }
 
-function currentSelection(path: string): Selection {
-  const { a, b, active, inactive } = names(path);
-
-  const basenameA = basename(a);
-  const basenameB = basename(b);
-
-  const targetActive = readlinkSync(active);
-  if (targetActive !== basenameA && targetActive !== basenameB) {
-    throw new Error(`Symlink '${active}': Invalid target: '${targetActive}'.`);
+function currentSelection(names: Names): Selection {
+  const targetActive = readlinkSync(names.active);
+  if (targetActive !== names.basenameA && targetActive !== names.basenameB) {
+    throw new Error(`Symlink '${names.active}': Invalid target: '${targetActive}'.`);
   }
 
-  const targetInactive = readlinkSync(inactive);
-  if (targetInactive !== basenameA && targetInactive !== basenameB) {
-    throw new Error(`Symlink '${inactive}': Invalid target: '${targetInactive}'.`);
+  const targetInactive = readlinkSync(names.inactive);
+  if (targetInactive !== names.basenameA && targetInactive !== names.basenameB) {
+    throw new Error(`Symlink '${names.inactive}': Invalid target: '${targetInactive}'.`);
   }
 
   if (targetActive === targetInactive) {
     throw new Error("Symlinks '${active}' and '${inactive}': Equal target: '${targetActive}'.");
   }
 
-  return targetActive === basenameA ? Selection.A : Selection.B;
+  return targetActive === names.basenameA ? Selection.A : Selection.B;
 }

@@ -1,14 +1,26 @@
-import names from "../names";
+import Names from "../names";
 
-function makeTestcase(path: string, base: string) {
-  return [path, { active: base, inactive: base + ".inactive", a: base + ".a", b: base + ".b" }];
+function makeTestcase(path: string, base: string, basename?: string) {
+  return [
+    path,
+    {
+      active: base,
+      inactive: base + ".inactive",
+
+      a: base + ".a",
+      b: base + ".b",
+
+      basenameA: (basename || base) + ".a",
+      basenameB: (basename || base) + ".b",
+    },
+  ];
 }
 
 const testcases = [
   makeTestcase("testdir", "testdir"),
   makeTestcase("dir/.", "dir"),
   makeTestcase("./dir", "dir"),
-  makeTestcase("../dir", "../dir"),
+  makeTestcase("../dir", "../dir", "dir"),
   makeTestcase("a/b/..", "a"),
 ];
 
@@ -16,7 +28,7 @@ test.each(testcases)("names(%p)", (path, expected) => {
   expect(typeof path).toBe("string");
   expect(typeof expected).toBe("object");
   // @ts-ignore
-  expect(names(path)).toStrictEqual(expected);
+  expect(new Names(path)).toMatchObject<Names>(expected);
 });
 
 const illegals = ["/", ".", "..", "", "dir/..", undefined, null, false, true, 0, 1, [], {}];
