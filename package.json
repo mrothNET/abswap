@@ -5,7 +5,8 @@
   "author": "Michael Roth <mail@mroth.net>",
   "license": "MIT",
   "files": [
-    "lib/**/*"
+    "lib/**/*",
+    "assets/**/*"
   ],
   "bin": {
     "abswap": "lib/cli.js"
