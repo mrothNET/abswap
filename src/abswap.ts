@@ -1,6 +1,6 @@
-import { readlinkSync } from "fs";
-import { mkdirp, remove, symlink } from "./filesystem";
-import { isDirectory, isDirectoryOrMissing, isSymlink, isSymlinkOrMissing } from "./filetype";
+import { readlinkSync, renameSync } from "fs";
+import { mkdirp, remove, symlink, touch } from "./filesystem";
+import { isDirectory, isFile, isMissing } from "./filetype";
 import Names from "./names";
 
 enum Selection {
@@ -11,54 +11,50 @@ enum Selection {
 export function init(path: string): void {
   const names = new Names(path);
 
-  verifyExistingPath(isSymlinkOrMissing, names.active);
-  verifyExistingPath(isSymlinkOrMissing, names.inactive);
-  verifyExistingPath(isDirectoryOrMissing, names.a);
-  verifyExistingPath(isDirectoryOrMissing, names.b);
+  if (testAllNonexistent(names)) {
+    mkdirp(names.a);
+    mkdirp(names.b);
+  } else if (testActiveIsDirectory(names)) {
+    mkdirp(names.b);
+    renameSync(names.active, names.a);
+  } else if (testActiveIsFile(names)) {
+    touch(names.b);
+    renameSync(names.active, names.a);
+  } else {
+    throw new Error(`Cannot initialize '${path}': Invalid path entries or combinations.`);
+  }
 
-  mkdirp(names.a);
-  mkdirp(names.b);
-
-  symlink(names.basenameA, names.active);
-  symlink(names.basenameB, names.inactive);
+  makeSelection(names, Selection.A);
 }
 
 export function swap(path: string): void {
   const names = new Names(path);
 
-  verifyRequiredPath(isSymlink, names.active);
-  verifyRequiredPath(isSymlink, names.inactive);
-  verifyRequiredPath(isDirectory, names.a);
-  verifyRequiredPath(isDirectory, names.b);
+  verifyRequiredPath(names.a);
+  verifyRequiredPath(names.b);
 
-  switch (currentSelection(names)) {
-    case Selection.A:
-      remove(names.inactive);
-      symlink(names.basenameB, names.active);
-      symlink(names.basenameA, names.inactive);
-      break;
-
-    case Selection.B:
-      remove(names.inactive);
-      symlink(names.basenameA, names.active);
-      symlink(names.basenameB, names.inactive);
-      break;
-  }
+  makeSelection(names, getSelection(names) === Selection.A ? Selection.B : Selection.A);
 }
 
-function verifyExistingPath(pathTest: (path: string) => boolean, path: string): void {
-  if (!pathTest(path)) {
-    throw new Error(`Existing path '${path}': Invalid file type.`);
-  }
+function testAllNonexistent(names: Names): boolean {
+  return isMissing(names.a) && isMissing(names.b) && isMissing(names.active) && isMissing(names.inactive);
 }
 
-function verifyRequiredPath(pathTest: (path: string) => boolean, path: string): void {
-  if (!pathTest(path)) {
+function testActiveIsDirectory(names: Names): boolean {
+  return isMissing(names.a) && isMissing(names.b) && isDirectory(names.active) && isMissing(names.inactive);
+}
+
+function testActiveIsFile(names: Names): boolean {
+  return isMissing(names.a) && isMissing(names.b) && isFile(names.active) && isMissing(names.inactive);
+}
+
+function verifyRequiredPath(path: string): void {
+  if (isMissing(path)) {
     throw new Error(`Required path '${path}': Missing.`);
   }
 }
 
-function currentSelection(names: Names): Selection {
+function getSelection(names: Names): Selection {
   const targetActive = readlinkSync(names.active);
   if (targetActive !== names.basenameA && targetActive !== names.basenameB) {
     throw new Error(`Symlink '${names.active}': Invalid target: '${targetActive}'.`);
@@ -74,4 +70,10 @@ function currentSelection(names: Names): Selection {
   }
 
   return targetActive === names.basenameA ? Selection.A : Selection.B;
+}
+
+function makeSelection(names: Names, select: Selection): void {
+  remove(names.inactive);
+  symlink(select === Selection.A ? names.basenameA : names.basenameB, names.active);
+  symlink(select === Selection.A ? names.basenameB : names.basenameA, names.inactive);
 }

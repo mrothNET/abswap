@@ -1,8 +1,11 @@
-import { mkdirSync, renameSync, symlinkSync, unlinkSync } from "fs";
+import { mkdirSync, renameSync, symlinkSync, unlinkSync, writeFileSync } from "fs";
+import { dirname } from "path";
 import { isMissing } from "./filetype";
 
 export function mkdirp(path: string): void {
-  mkdirSync(path, { recursive: true });
+  if (isMissing(path)) {
+    mkdirSync(path, { recursive: true });
+  }
 }
 
 export function symlink(target: string, path: string): void {
@@ -23,4 +26,9 @@ export function remove(path: string): void {
       throw err;
     }
   }
+}
+
+export function touch(path: string): void {
+  mkdirp(dirname(path));
+  writeFileSync(path, "");
 }
