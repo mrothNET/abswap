@@ -40,11 +40,24 @@ export function init(path: string, mode?: Mode): void {
   makeSelection(names, Selection.A);
 }
 
-export function swap(path: string): void {
+export function swap(path: string, mode?: Mode): void {
   const names = new Names(path);
 
-  verifyRequiredPath(names.a);
-  verifyRequiredPath(names.b);
+  switch (mode) {
+    case Mode.File:
+      verifyRequiredFile(names.a);
+      verifyRequiredFile(names.b);
+      break;
+
+    case Mode.Directory:
+      verifyRequiredDirectory(names.a);
+      verifyRequiredDirectory(names.b);
+      break;
+
+    default:
+      verifyRequiredPath(names.a);
+      verifyRequiredPath(names.b);
+  }
 
   makeSelection(names, getSelection(names) === Selection.A ? Selection.B : Selection.A);
 }
@@ -64,5 +77,17 @@ function testActiveIsFile(names: Names): boolean {
 function verifyRequiredPath(path: string): void {
   if (isMissing(path)) {
     throw new Error(`Required path '${path}': Missing.`);
+  }
+}
+
+function verifyRequiredFile(path: string): void {
+  if (!isFile(path)) {
+    throw new Error(`Required regular file '${path}': ${isMissing(path) ? "Missing" : "Not a regular file"}.`);
+  }
+}
+
+function verifyRequiredDirectory(path: string): void {
+  if (!isDirectory(path)) {
+    throw new Error(`Required directory '${path}': ${isMissing(path) ? "Missing" : "Not a directory"}.`);
   }
 }

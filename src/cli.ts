@@ -29,7 +29,7 @@ try {
   if (initialize) {
     abswap.init(path, mode);
   } else {
-    abswap.swap(path);
+    abswap.swap(path, mode);
   }
 } catch (err) {
   console.error(`abswap: ${err.message}`);
