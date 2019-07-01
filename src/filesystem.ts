@@ -1,4 +1,4 @@
-import { mkdirSync, renameSync, symlinkSync } from "fs";
+import { mkdirSync, renameSync, symlinkSync, unlinkSync } from "fs";
 import { isMissing } from "./filetype";
 
 export function mkdirp(path: string): void {
@@ -13,4 +13,14 @@ export function symlink(target: string, path: string): void {
 
   symlinkSync(target, temp);
   renameSync(temp, path);
+}
+
+export function remove(path: string): void {
+  try {
+    unlinkSync(path);
+  } catch (err) {
+    if (err.code !== "ENOENT") {
+      throw err;
+    }
+  }
 }

@@ -1,5 +1,5 @@
-import { readlinkSync, unlinkSync } from "fs";
-import { mkdirp, symlink } from "./filesystem";
+import { readlinkSync } from "fs";
+import { mkdirp, remove, symlink } from "./filesystem";
 import { isDirectory, isDirectoryOrMissing, isSymlink, isSymlinkOrMissing } from "./filetype";
 import Names from "./names";
 
@@ -33,13 +33,13 @@ export function swap(path: string): void {
 
   switch (currentSelection(names)) {
     case Selection.A:
-      unlinkSync(names.inactive);
+      remove(names.inactive);
       symlink(names.basenameB, names.active);
       symlink(names.basenameA, names.inactive);
       break;
 
     case Selection.B:
-      unlinkSync(names.inactive);
+      remove(names.inactive);
       symlink(names.basenameA, names.active);
       symlink(names.basenameB, names.inactive);
       break;
