@@ -27,6 +27,7 @@ Usage: abswap [options] <path>
 Options:
   -V, --version  output the version number
   --init         initialize a path for a/b swap
+  --copy         copy existing path to inactive selection on initialize
   --file         expect (or create) regular files as targets
   --directory    expect (or create) directory as targets
   -h, --help     output usage information
@@ -34,6 +35,9 @@ Options:
 
 
 ## Changelog
+
+**`v0.3.0`**
+  - New option `--copy` to copy existing file or directory to inactive selection on initialize.
 
 **`v0.2.0`**
   - Can convert existing files or directories.

@@ -1,58 +1,37 @@
-import { lstatSync, Stats } from "fs";
+import { lstatSync } from "fs";
 
-const testFile = Stats.prototype.isFile;
-const testDirectory = Stats.prototype.isDirectory;
-const testSymlink = Stats.prototype.isSymbolicLink;
+export enum Filetype {
+  Unknown,
+  Nonexistent,
+  File,
+  Directory,
+  Symlink,
+}
 
-export function isMissing(path: string): boolean {
-  assertPathValid(path);
-  try {
-    lstatSync(path);
-    return false;
-  } catch {
-    return true;
+export function getFiletype(path: string): Filetype {
+  if (path === "") {
+    throw new Error("Empty path not allowed");
   }
-}
 
-export function isFile(path: string): boolean {
-  return testFiletype(path, testFile, true);
-}
-
-export function isDirectory(path: string): boolean {
-  return testFiletype(path, testDirectory, true);
-}
-
-export function isSymlink(path: string): boolean {
-  return testFiletype(path, testSymlink, true);
-}
-
-export function isFileOrMissing(path: string): boolean {
-  return testFiletype(path, testFile, false);
-}
-export function isDirectoryOrMissing(path: string): boolean {
-  return testFiletype(path, testDirectory, false);
-}
-
-export function isSymlinkOrMissing(path: string): boolean {
-  return testFiletype(path, testSymlink, false);
-}
-
-function testFiletype(path: string, fn: () => boolean, required: boolean): boolean {
-  assertPathValid(path);
   try {
     const stat = lstatSync(path);
-    return fn.call(stat);
+
+    if (stat.isFile()) {
+      return Filetype.File;
+    } else if (stat.isDirectory()) {
+      return Filetype.Directory;
+    } else if (stat.isFile()) {
+      return Filetype.File;
+    } else if (stat.isSymbolicLink()) {
+      return Filetype.Symlink;
+    } else {
+      return Filetype.Unknown;
+    }
   } catch (err) {
     if (err.code === "ENOENT") {
-      return !required;
+      return Filetype.Nonexistent;
     } else {
       throw err;
     }
-  }
-}
-
-function assertPathValid(path: string): void {
-  if (typeof path !== "string" || path === "") {
-    throw new Error("Empty path not allowed");
   }
 }

@@ -1,54 +1,108 @@
-import { ensureDirSync, ensureFileSync, renameSync } from "fs-extra";
-import { isDirectory, isFile, isMissing } from "./filetype";
+import { copySync, ensureDirSync, ensureFileSync, renameSync } from "fs-extra";
+import { Filetype, getFiletype } from "./filetype";
 import Names from "./names";
 import { getSelection, makeSelection, Selection } from "./selection";
 
-export enum Mode {
-  File = "File",
-  Directory = "Directory",
+export type Arguments = {
+  path: string;
+  mode?: "file" | "directory";
+  copy?: boolean;
+};
+
+enum InitMode {
+  Unknown,
+  NonExistent,
+  File,
+  Directory,
 }
 
-export function init(path: string, mode?: Mode): void {
-  const names = new Names(path);
+export function init(args: Arguments): void {
+  const names = new Names(args.path);
 
-  if (testAllNonexistent(names)) {
-    if (mode === Mode.File) {
-      ensureFileSync(names.a);
-      ensureFileSync(names.b);
-    } else {
-      // Default: directory
-      ensureDirSync(names.a);
-      ensureDirSync(names.b);
-    }
-  } else if (testActiveIsDirectory(names)) {
-    if (mode === Mode.File) {
-      throw new Error(`Directory '${path}': Expected to be a regular file.`);
-    }
-    ensureDirSync(names.b);
-    renameSync(names.active, names.a);
-  } else if (testActiveIsFile(names)) {
-    if (mode === Mode.Directory) {
-      throw new Error(`File '${path}': Expected to be a directory.`);
-    }
+  const mode = guessInitMode(names);
+  switch (mode) {
+    case InitMode.NonExistent:
+      initNonexistent(names, args);
+      break;
+
+    case InitMode.File:
+    case InitMode.Directory:
+      initExisting(names, args, mode);
+      break;
+
+    default:
+      throw new Error(`Cannot initialize '${args.path}': Invalid path entries or combinations.`);
+      break;
+  }
+}
+
+function guessInitMode(names: Names): InitMode {
+  if (
+    getFiletype(names.a) !== Filetype.Nonexistent ||
+    getFiletype(names.b) !== Filetype.Nonexistent ||
+    getFiletype(names.inactive) !== Filetype.Nonexistent
+  ) {
+    return InitMode.Unknown;
+  }
+
+  switch (getFiletype(names.active)) {
+    case Filetype.Nonexistent:
+      return InitMode.NonExistent;
+
+    case Filetype.File:
+      return InitMode.File;
+
+    case Filetype.Directory:
+      return InitMode.Directory;
+
+    default:
+      return InitMode.Unknown;
+  }
+}
+
+function initNonexistent(names: Names, args: Arguments): void {
+  if (args.mode === "file") {
+    ensureFileSync(names.a);
     ensureFileSync(names.b);
-    renameSync(names.active, names.a);
   } else {
-    throw new Error(`Cannot initialize '${path}': Invalid path entries or combinations.`);
+    ensureDirSync(names.a);
+    ensureDirSync(names.b);
   }
 
   makeSelection(names, Selection.A);
 }
 
-export function swap(path: string, mode?: Mode): void {
-  const names = new Names(path);
+function initExisting(names: Names, args: Arguments, mode: InitMode): void {
+  if (mode === InitMode.Directory && args.mode === "file") {
+    throw new Error(`Directory '${names.active}': Expected to be a regular file.`);
+  }
 
-  switch (mode) {
-    case Mode.File:
+  if (mode === InitMode.File && args.mode === "directory") {
+    throw new Error(`File '${names.active}': Expected to be a directory.`);
+  }
+
+  if (args.copy) {
+    copySync(names.active, names.b, { overwrite: false, errorOnExist: true, preserveTimestamps: true });
+  } else if (mode === InitMode.Directory) {
+    ensureDirSync(names.b);
+  } else if (mode === InitMode.File) {
+    ensureFileSync(names.b);
+  }
+
+  renameSync(names.active, names.a);
+  makeSelection(names, Selection.A);
+}
+
+export function swap(args: Arguments): void {
+  const names = new Names(args.path);
+
+  switch (args.mode) {
+    case "file":
       verifyRequiredFile(names.a);
       verifyRequiredFile(names.b);
       break;
 
-    case Mode.Directory:
+    case "directory":
       verifyRequiredDirectory(names.a);
       verifyRequiredDirectory(names.b);
       break;
@@ -61,32 +115,24 @@ export function swap(path: string, mode?: Mode): void {
   makeSelection(names, getSelection(names) === Selection.A ? Selection.B : Selection.A);
 }
 
-function testAllNonexistent(names: Names): boolean {
-  return isMissing(names.a) && isMissing(names.b) && isMissing(names.active) && isMissing(names.inactive);
-}
-
-function testActiveIsDirectory(names: Names): boolean {
-  return isMissing(names.a) && isMissing(names.b) && isDirectory(names.active) && isMissing(names.inactive);
-}
-
-function testActiveIsFile(names: Names): boolean {
-  return isMissing(names.a) && isMissing(names.b) && isFile(names.active) && isMissing(names.inactive);
-}
-
 function verifyRequiredPath(path: string): void {
-  if (isMissing(path)) {
+  if (getFiletype(path) === Filetype.Nonexistent) {
     throw new Error(`Required path '${path}': Missing.`);
   }
 }
 
 function verifyRequiredFile(path: string): void {
-  if (!isFile(path)) {
-    throw new Error(`Required regular file '${path}': ${isMissing(path) ? "Missing" : "Not a regular file"}.`);
+  const ft = getFiletype(path);
+  if (ft !== Filetype.File) {
+    throw new Error(
+      `Required regular file '${path}': ${ft === Filetype.Nonexistent ? "Missing" : "Not a regular file"}.`,
+    );
   }
 }
 
 function verifyRequiredDirectory(path: string): void {
-  if (!isDirectory(path)) {
-    throw new Error(`Required directory '${path}': ${isMissing(path) ? "Missing" : "Not a directory"}.`);
+  const ft = getFiletype(path);
+  if (getFiletype(path) !== Filetype.Directory) {
+    throw new Error(`Required directory '${path}': ${ft === Filetype.Nonexistent ? "Missing" : "Not a directory"}.`);
   }
 }
