@@ -16,26 +16,27 @@
     "build": "tsc",
     "test": "jest --all",
     "watch": "jest --watch",
-    "clean": "rimraf lib",
+    "clean": "rm -rf lib",
     "format": "prettier --write 'src/**/*.ts'",
     "lint": "tslint -p .",
     "prepare": "npm run clean && npm run build",
     "prepublishOnly": "npm run lint && npm test"
   },
   "devDependencies": {
+    "@types/fs-extra": "^8.0.0",
     "@types/jest": "^24.0.15",
     "@types/node": "^12.0.10",
     "jest": "^24.8.0",
     "jest-junit": "^6.4.0",
     "prettier": "^1.18.2",
-    "rimraf": "^2.6.3",
     "ts-jest": "^24.0.2",
     "tslint": "^5.18.0",
     "tslint-config-prettier": "^1.18.0",
     "typescript": "^3.5.2"
   },
   "dependencies": {
-    "commander": "^2.20.0"
+    "commander": "^2.20.0",
+    "fs-extra": "^8.1.0"
   },
   "repository": {
     "type": "git",

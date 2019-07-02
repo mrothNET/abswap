@@ -1,5 +1,5 @@
-import { readlinkSync } from "fs";
-import { remove, symlink } from "./filesystem";
+import { readlinkSync, removeSync } from "fs-extra";
+import { symlink } from "./filesystem";
 import Names from "./names";
 
 export enum Selection {
@@ -8,7 +8,7 @@ export enum Selection {
 }
 
 export function makeSelection(names: Names, select: Selection): void {
-  remove(names.inactive);
+  removeSync(names.inactive);
   symlink(select === Selection.A ? names.basenameA : names.basenameB, names.active);
   symlink(select === Selection.A ? names.basenameB : names.basenameA, names.inactive);
 }

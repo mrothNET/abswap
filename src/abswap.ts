@@ -1,5 +1,4 @@
-import { renameSync } from "fs";
-import { mkdirp, touch } from "./filesystem";
+import { ensureDirSync, ensureFileSync, renameSync } from "fs-extra";
 import { isDirectory, isFile, isMissing } from "./filetype";
 import Names from "./names";
 import { getSelection, makeSelection, Selection } from "./selection";
@@ -14,24 +13,24 @@ export function init(path: string, mode?: Mode): void {
 
   if (testAllNonexistent(names)) {
     if (mode === Mode.File) {
-      touch(names.a);
-      touch(names.b);
+      ensureFileSync(names.a);
+      ensureFileSync(names.b);
     } else {
       // Default: directory
-      mkdirp(names.a);
-      mkdirp(names.b);
+      ensureDirSync(names.a);
+      ensureDirSync(names.b);
     }
   } else if (testActiveIsDirectory(names)) {
     if (mode === Mode.File) {
       throw new Error(`Directory '${path}': Expected to be a regular file.`);
     }
-    mkdirp(names.b);
+    ensureDirSync(names.b);
     renameSync(names.active, names.a);
   } else if (testActiveIsFile(names)) {
     if (mode === Mode.Directory) {
       throw new Error(`File '${path}': Expected to be a directory.`);
     }
-    touch(names.b);
+    ensureFileSync(names.b);
     renameSync(names.active, names.a);
   } else {
     throw new Error(`Cannot initialize '${path}': Invalid path entries or combinations.`);
