@@ -1,5 +1,4 @@
-import { readlinkSync, removeSync } from "fs-extra";
-import { symlink } from "./filesystem";
+import { readlinkSync, removeSync, renameSync, symlinkSync } from "fs-extra";
 import Names from "./names";
 
 export enum Selection {
@@ -29,4 +28,10 @@ export function getSelection(names: Names): Selection {
   }
 
   return targetActive === names.basenameA ? Selection.A : Selection.B;
+}
+
+function symlink(target: string, path: string): void {
+  const temp = `${path}.___${Date.now()}___`;
+  symlinkSync(target, temp);
+  renameSync(temp, path);
 }
