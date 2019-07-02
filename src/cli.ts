@@ -12,8 +12,8 @@ program
   .name("abswap")
   .version(version)
   .option("--init", "initialize a path for a/b swap", () => (initialize = true))
-  .option("--file", "expect (or creates) regular files as targets", () => (mode = abswap.Mode.File))
-  .option("--directory", "expect (or creates) directory as targets", () => (mode = abswap.Mode.Directory))
+  .option("--file", "expect (or create) regular files as targets", () => (mode = abswap.Mode.File))
+  .option("--directory", "expect (or create) directory as targets", () => (mode = abswap.Mode.Directory))
   .arguments("<path>")
   .action(arg => {
     path = arg;
