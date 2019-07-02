@@ -1,13 +1,15 @@
 # Swap Files or Directories using Symlinks
 
+![Dependency status](https://img.shields.io/librariesio/release/npm/abswap.svg?style=flat-square)&nbsp;&nbsp;![npm](https://img.shields.io/npm/v/abswap.svg?style=flat-square)&nbsp;&nbsp;![Code size](https://img.shields.io/github/languages/code-size/mrothNET/abswap.svg?style=flat-square)&nbsp;&nbsp;![License](https://img.shields.io/github/license/mrothNET/abswap.svg?style=flat-square)
+
 ![Screencast](./assets/screencast-example.gif)
 
 
 ## Features
 
-  * Works with directories and regular files.
-  * Maintains always a valid symlink for the activated selection (atomic behavior).
-  * ...
+  * Work with directories and regular files.
+  * Maintain valid symlink for the activated selection (atomicity behavior).
+  * Convert existing file or directory to a/b structure.
 
 
 ## Install
@@ -25,8 +27,8 @@ Usage: abswap [options] <path>
 Options:
   -V, --version  output the version number
   --init         initialize a path for a/b swap
-  --file         expect (or creates) regular files as targets
-  --directory    expect (or creates) directory as targets
+  --file         expect (or create) regular files as targets
+  --directory    expect (or create) directory as targets
   -h, --help     output usage information
 ```
 
