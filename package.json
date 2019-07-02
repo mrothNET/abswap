@@ -6,7 +6,8 @@
   "license": "MIT",
   "files": [
     "lib/**/*",
-    "assets/**/*"
+    "assets/**/*",
+    "yarn.lock"
   ],
   "bin": {
     "abswap": "lib/cli.js"
