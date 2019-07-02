@@ -1,0 +1,30 @@
+version: 2
+
+jobs:
+  build:
+    docker:
+      - image: circleci/node:lts
+    steps:
+      - checkout
+      - restore_cache:
+          key: dependency-cache-{{ checksum "package.json" }}
+      - run:
+          name: install
+          command: yarn install
+      - save_cache:
+          key: dependency-cache-{{ checksum "package.json" }}
+          paths:
+            - ./node_modules
+      - run:
+          name: build
+          command: yarn build
+      - run:
+          name: lint
+          command: yarn lint
+      - run:
+          name: test
+          command: yarn jest --ci --runInBand
+          environment:
+            JEST_JUNIT_OUTPUT: test-results/results.xml
+      - store_test_results:
+          path: test-results
