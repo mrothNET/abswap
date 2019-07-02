@@ -24,16 +24,18 @@ const testcases = [
   makeTestcase("a/b/..", "a"),
 ];
 
-test.each(testcases)("names(%p)", (path, expected) => {
-  expect(typeof path).toBe("string");
-  expect(typeof expected).toBe("object");
-  // @ts-ignore
-  expect(new Names(path)).toMatchObject<Names>(expected);
-});
+describe("Names", () => {
+  test.each(testcases)("Names(%p)", (path, expected) => {
+    expect(typeof path).toBe("string");
+    expect(typeof expected).toBe("object");
+    // @ts-ignore
+    expect(new Names(path)).toMatchObject<Names>(expected);
+  });
 
-const illegals = ["/", ".", "..", "", "dir/..", undefined, null, false, true, 0, 1, [], {}];
+  const illegals = ["/", ".", "..", "", "dir/..", undefined, null, false, true, 0, 1, [], {}];
 
-test.each(illegals)("names(%p) should throw an error", arg => {
-  // @ts-ignore
-  expect(() => names(arg)).toThrowError();
+  test.each(illegals)("Names(%p) should throw an error", arg => {
+    // @ts-ignore
+    expect(() => names(arg)).toThrowError();
+  });
 });
