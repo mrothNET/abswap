@@ -53,5 +53,10 @@
   },
   "jest-junit": {
     "output": "./testresults.xml"
+  },
+  "prettier": {
+    "printWidth": 120,
+    "trailingComma": "all",
+    "singleQuote": false
   }
 }
