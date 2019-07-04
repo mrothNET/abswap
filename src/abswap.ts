@@ -1,4 +1,4 @@
-import { copySync, ensureDirSync, ensureFileSync, renameSync } from "fs-extra";
+import { copySync, ensureDirSync, ensureFileSync, removeSync, renameSync } from "fs-extra";
 import { Filetype, getFiletype } from "./filetype";
 import Names from "./names";
 import { getSelection, makeSelection, Selection } from "./selection";
@@ -93,10 +93,25 @@ function initExisting(names: Names, args: Arguments, mode: InitMode): void {
   makeSelection(names, Selection.A);
 }
 
+export function undo(args: Arguments): void {
+  const names = new Names(args.path);
+  verifyAB(names, args.mode);
+  const selection = getSelection(names);
+
+  removeSync(names.inactive);
+  removeSync(selection === Selection.A ? names.b : names.a);
+  removeSync(names.active);
+  renameSync(selection === Selection.A ? names.a : names.b, names.active);
+}
+
 export function swap(args: Arguments): void {
   const names = new Names(args.path);
+  verifyAB(names, args.mode);
+  makeSelection(names, getSelection(names) === Selection.A ? Selection.B : Selection.A);
+}
 
-  switch (args.mode) {
+function verifyAB(names: Names, mode: "file" | "directory" | undefined): void {
+  switch (mode) {
     case "file":
       verifyRequiredFile(names.a);
       verifyRequiredFile(names.b);
@@ -111,8 +126,6 @@ export function swap(args: Arguments): void {
       verifyRequiredPath(names.a);
       verifyRequiredPath(names.b);
   }
-
-  makeSelection(names, getSelection(names) === Selection.A ? Selection.B : Selection.A);
 }
 
 function verifyRequiredPath(path: string): void {
