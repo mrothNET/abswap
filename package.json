@@ -44,5 +44,11 @@
     "url": "git+https://github.com/mrothNET/abswap.git"
   },
   "homepage": "https://github.com/mrothNET/abswap",
-  "keywords": [ "shell", "cli", "swap", "switch", "directory", "file", "symlink" ]
+  "keywords": [ "shell", "cli", "swap", "switch", "directory", "file", "symlink" ],
+  "jest": {
+    "roots": ["src"],
+    "preset": "ts-jest",
+    "testEnvironment": "node",
+    "reporters": [ "default", "jest-junit" ]
+  }
 }
