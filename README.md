@@ -30,11 +30,15 @@ Options:
   --copy         copy existing path to inactive selection on initialize
   --file         expect (or create) regular files as targets
   --directory    expect (or create) directory as targets
+  --undo         delete a/b structure und keep active selection
   -h, --help     output usage information
 ```
 
 
 ## Changelog
+
+**`v1.0.0`**
+  - New option `--undo` to convert a/b structure back to a simple file or directory.
 
 **`v0.3.0`**
   - New option `--copy` to copy existing file or directory to inactive selection on initialize.
