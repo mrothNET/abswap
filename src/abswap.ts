@@ -125,6 +125,9 @@ function verifyAB(names: Names, mode: "file" | "directory" | undefined): void {
     default:
       verifyRequiredPath(names.a);
       verifyRequiredPath(names.b);
+      if (getFiletype(names.a) !== getFiletype(names.b)) {
+        throw new Error(`Path '${names.a}' and '${names.b}': Different file types`);
+      }
   }
 }
 
