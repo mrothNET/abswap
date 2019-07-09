@@ -1,4 +1,4 @@
-# Swap Files or Directories using Symlinks
+# `abswap` - Swap Files or Directories using Symlinks
 
 ![dependencies](https://img.shields.io/librariesio/release/npm/abswap.svg?style=flat-square)&nbsp;&nbsp;![tests](https://img.shields.io/circleci/build/github/mrothNET/abswap/master.svg?label=tests&style=flat-square)&nbsp;&nbsp;![npm](https://img.shields.io/npm/v/abswap.svg?style=flat-square)&nbsp;&nbsp;![code size](https://img.shields.io/github/languages/code-size/mrothNET/abswap.svg?style=flat-square)&nbsp;&nbsp;![license](https://img.shields.io/github/license/mrothNET/abswap.svg?style=flat-square)
 
