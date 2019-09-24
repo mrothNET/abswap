@@ -16,7 +16,7 @@ enum InitMode {
   Directory,
 }
 
-export function init(args: Arguments): void {
+export async function init(args: Arguments): Promise<void> {
   const names = new Names(args.path);
 
   const mode = guessInitMode(names);
@@ -93,7 +93,7 @@ function initExisting(names: Names, args: Arguments, mode: InitMode): void {
   makeSelection(names, Selection.A);
 }
 
-export function undo(args: Arguments): void {
+export async function undo(args: Arguments): Promise<void> {
   const names = new Names(args.path);
   verifyAB(names, args.mode);
   const selection = getSelection(names);
@@ -104,7 +104,7 @@ export function undo(args: Arguments): void {
   renameSync(selection === Selection.A ? names.a : names.b, names.active);
 }
 
-export function swap(args: Arguments): void {
+export async function swap(args: Arguments): Promise<void> {
   const names = new Names(args.path);
   verifyAB(names, args.mode);
   makeSelection(names, getSelection(names) === Selection.A ? Selection.B : Selection.A);

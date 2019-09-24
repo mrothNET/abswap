@@ -40,32 +40,32 @@ function expectAB(filetype: Filetype, selection: "a" | "b") {
 }
 
 describe("abswap", () => {
-  test("initialize default directories is working", () => {
-    abswap.init({ path: "test" });
+  test("initialize default directories is working", async () => {
+    await abswap.init({ path: "test" });
     expectAB(Filetype.Directory, "a");
   });
 
-  test("initialize directories is working", () => {
-    abswap.init({ path: "test", mode: "directory" });
+  test("initialize directories is working", async () => {
+    await abswap.init({ path: "test", mode: "directory" });
     expectAB(Filetype.Directory, "a");
   });
 
-  test("initialize files is working", () => {
-    abswap.init({ path: "test", mode: "file" });
+  test("initialize files is working", async () => {
+    await abswap.init({ path: "test", mode: "file" });
     expectAB(Filetype.File, "a");
   });
 
-  test("use existing directory is working", () => {
+  test("use existing directory is working", async () => {
     ensureFileSync("test/marker");
-    abswap.init({ path: "test" });
+    await abswap.init({ path: "test" });
     expectAB(Filetype.Directory, "a");
     expect(getFiletype("test.a/marker")).toBe(Filetype.File);
     expect(getFiletype("test.b/marker")).toBe(Filetype.Nonexistent);
   });
 
-  test("use existing file is working", () => {
+  test("use existing file is working", async () => {
     writeFileSync("test", "X");
-    abswap.init({ path: "test", mode: "file" });
+    await abswap.init({ path: "test", mode: "file" });
     expectAB(Filetype.File, "a");
     expect(getFiletype("test.a")).toBe(Filetype.File);
     expect(getFiletype("test.b")).toBe(Filetype.File);
@@ -73,62 +73,62 @@ describe("abswap", () => {
     expect(readFileSync("test.b", "ASCII")).toBe("");
   });
 
-  test("copy existing directory is working", () => {
+  test("copy existing directory is working", async () => {
     ensureFileSync("test/marker");
-    abswap.init({ path: "test", copy: true });
+    await abswap.init({ path: "test", copy: true });
     expectAB(Filetype.Directory, "a");
     expect(getFiletype("test.a/marker")).toBe(Filetype.File);
     expect(getFiletype("test.b/marker")).toBe(Filetype.File);
   });
 
-  test("copy existing file is working", () => {
+  test("copy existing file is working", async () => {
     writeFileSync("test", "X");
-    abswap.init({ path: "test", copy: true });
+    await abswap.init({ path: "test", copy: true });
     expect(getFiletype("test.a")).toBe(Filetype.File);
     expect(getFiletype("test.b")).toBe(Filetype.File);
     expect(readFileSync("test.a", "ASCII")).toBe("X");
     expect(readFileSync("test.b", "ASCII")).toBe("X");
   });
 
-  test("swap directories is working", () => {
-    abswap.init({ path: "test" });
+  test("swap directories is working", async () => {
+    await abswap.init({ path: "test" });
     expectAB(Filetype.Directory, "a");
     ensureFileSync("test/markerA");
     ensureDirSync("test.inactive/markerB");
 
-    abswap.swap({ path: "test" });
+    await abswap.swap({ path: "test" });
     expectAB(Filetype.Directory, "b");
     expect(getFiletype("test/markerB")).toBe(Filetype.Directory);
     expect(getFiletype("test.inactive/markerA")).toBe(Filetype.File);
 
-    abswap.swap({ path: "test" });
+    await abswap.swap({ path: "test" });
     expectAB(Filetype.Directory, "a");
     expect(getFiletype("test/markerA")).toBe(Filetype.File);
     expect(getFiletype("test.inactive/markerB")).toBe(Filetype.Directory);
   });
 
-  test("swap files is working", () => {
-    abswap.init({ path: "test", mode: "file" });
+  test("swap files is working", async () => {
+    await abswap.init({ path: "test", mode: "file" });
     expectAB(Filetype.File, "a");
     writeFileSync("test", "A");
     writeFileSync("test.inactive", "B");
 
-    abswap.swap({ path: "test" });
+    await abswap.swap({ path: "test" });
     expectAB(Filetype.File, "b");
     expect(readFileSync("test", "ASCII")).toBe("B");
     expect(readFileSync("test.inactive", "ASCII")).toBe("A");
 
-    abswap.swap({ path: "test" });
+    await abswap.swap({ path: "test" });
     expectAB(Filetype.File, "a");
     expect(readFileSync("test", "ASCII")).toBe("A");
     expect(readFileSync("test.inactive", "ASCII")).toBe("B");
   });
 
-  test("undo directory is working", () => {
-    abswap.init({ path: "test" });
+  test("undo directory is working", async () => {
+    await abswap.init({ path: "test" });
     ensureFileSync("test.inactive/marker");
-    abswap.swap({ path: "test" });
-    abswap.undo({ path: "test" });
+    await abswap.swap({ path: "test" });
+    await abswap.undo({ path: "test" });
     expect(getFiletype("test")).toBe(Filetype.Directory);
     expect(getFiletype("test/marker")).toBe(Filetype.File);
     expect(getFiletype("test.inactive")).toBe(Filetype.Nonexistent);
@@ -136,12 +136,12 @@ describe("abswap", () => {
     expect(getFiletype("test.b")).toBe(Filetype.Nonexistent);
   });
 
-  test("undo file is working", () => {
-    abswap.init({ path: "test", mode: "file" });
+  test("undo file is working", async () => {
+    await abswap.init({ path: "test", mode: "file" });
     writeFileSync("test", "A");
     writeFileSync("test.inactive", "B");
-    abswap.swap({ path: "test" });
-    abswap.undo({ path: "test" });
+    await abswap.swap({ path: "test" });
+    await abswap.undo({ path: "test" });
     expect(getFiletype("test")).toBe(Filetype.File);
     expect(readFileSync("test", "ASCII")).toBe("B");
     expect(getFiletype("test.inactive")).toBe(Filetype.Nonexistent);
@@ -149,73 +149,73 @@ describe("abswap", () => {
     expect(getFiletype("test.b")).toBe(Filetype.Nonexistent);
   });
 
-  test("option --directory and existing file throws an error", () => {
+  test("option --directory and existing file throws an error", async () => {
     ensureFileSync("test");
-    expect(() => abswap.init({ path: "test", mode: "directory" })).toThrowError();
+    await expect(abswap.init({ path: "test", mode: "directory" })).rejects.toThrowError();
   });
 
-  test("option --file and existing directory throws an error", () => {
+  test("option --file and existing directory throws an error", async () => {
     ensureDirSync("test");
-    expect(() => abswap.init({ path: "test", mode: "file" })).toThrowError();
+    await expect(abswap.init({ path: "test", mode: "file" })).rejects.toThrowError();
   });
 
-  test("missing 'active' symlink throws an error", () => {
+  test("missing 'active' symlink throws an error", async () => {
     ensureFileSync("test.a");
     ensureFileSync("test.b");
     symlinkSync("test.b", "test.inactive");
-    expect(() => abswap.swap({ path: "test" })).toThrowError();
+    await expect(abswap.swap({ path: "test" })).rejects.toThrowError();
   });
 
-  test("missing 'inactive' symlink throws an error", () => {
+  test("missing 'inactive' symlink throws an error", async () => {
     ensureFileSync("test.a");
     ensureFileSync("test.b");
     symlinkSync("test.a", "test");
-    expect(() => abswap.swap({ path: "test" })).toThrowError();
+    await expect(abswap.swap({ path: "test" })).rejects.toThrowError();
   });
 
-  test("missing 'a' component throws an error", () => {
+  test("missing 'a' component throws an error", async () => {
     ensureFileSync("test.b");
     symlinkSync("test.a", "test");
     symlinkSync("test.b", "test.inactive");
-    expect(() => abswap.swap({ path: "test" })).toThrowError();
+    await expect(abswap.swap({ path: "test" })).rejects.toThrowError();
   });
 
-  test("missing 'a' component throws an error", () => {
+  test("missing 'a' component throws an error", async () => {
     ensureFileSync("test.a");
     symlinkSync("test.a", "test");
     symlinkSync("test.b", "test.inactive");
-    expect(() => abswap.swap({ path: "test" })).toThrowError();
+    await expect(abswap.swap({ path: "test" })).rejects.toThrowError();
   });
 
-  test("invalid 'active' symlink throws an error", () => {
+  test("invalid 'active' symlink throws an error", async () => {
     ensureFileSync("test.a");
     ensureFileSync("test.b");
     symlinkSync("invalid", "test");
     symlinkSync("test.b", "test.inactive");
-    expect(() => abswap.swap({ path: "test" })).toThrowError();
+    await expect(abswap.swap({ path: "test" })).rejects.toThrowError();
   });
 
-  test("invalid 'inactive' symlink throws an error", () => {
+  test("invalid 'inactive' symlink throws an error", async () => {
     ensureFileSync("test.a");
     ensureFileSync("test.b");
     symlinkSync("test.a", "test");
     symlinkSync("invalid", "test.inactive");
-    expect(() => abswap.swap({ path: "test" })).toThrowError();
+    await expect(abswap.swap({ path: "test" })).rejects.toThrowError();
   });
 
-  test("symlinks targets are equal throws an error", () => {
+  test("symlinks targets are equal throws an error", async () => {
     ensureFileSync("test.a");
     ensureFileSync("test.b");
     symlinkSync("test.a", "test");
     symlinkSync("test.a", "test.inactive");
-    expect(() => abswap.swap({ path: "test" })).toThrowError();
+    await expect(abswap.swap({ path: "test" })).rejects.toThrowError();
   });
 
-  test("invalid a/b structure throws an error", () => {
+  test("invalid a/b structure throws an error", async () => {
     ensureFileSync("test.a");
     ensureDirSync("test.b");
     symlinkSync("test.a", "test");
     symlinkSync("test.b", "test.inactive");
-    expect(() => abswap.swap({ path: "test" })).toThrowError();
+    await expect(abswap.swap({ path: "test" })).rejects.toThrowError();
   });
 });
