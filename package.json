@@ -65,7 +65,7 @@
     ]
   },
   "jest-junit": {
-    "output": "./testresults.xml"
+    "outputName": "./testresults.xml"
   },
   "prettier": {
     "printWidth": 120,
