@@ -73,7 +73,6 @@ describe("abswap", () => {
     expect(readFileSync("test.b", "ASCII")).toBe("");
   });
 
-
   test("copy existing directory is working", () => {
     ensureFileSync("test/marker");
     abswap.init({ path: "test", copy: true });
@@ -106,7 +105,6 @@ describe("abswap", () => {
     expectAB(Filetype.Directory, "a");
     expect(getFiletype("test/markerA")).toBe(Filetype.File);
     expect(getFiletype("test.inactive/markerB")).toBe(Filetype.Directory);
-
   });
 
   test("swap files is working", () => {
@@ -154,70 +152,70 @@ describe("abswap", () => {
   test("option --directory and existing file throws an error", () => {
     ensureFileSync("test");
     expect(() => abswap.init({ path: "test", mode: "directory" })).toThrowError();
-  })
+  });
 
   test("option --file and existing directory throws an error", () => {
     ensureDirSync("test");
     expect(() => abswap.init({ path: "test", mode: "file" })).toThrowError();
-  })
+  });
 
   test("missing 'active' symlink throws an error", () => {
     ensureFileSync("test.a");
     ensureFileSync("test.b");
     symlinkSync("test.b", "test.inactive");
-    expect(() => abswap.swap({path:"test"})).toThrowError();
-  })
+    expect(() => abswap.swap({ path: "test" })).toThrowError();
+  });
 
   test("missing 'inactive' symlink throws an error", () => {
     ensureFileSync("test.a");
     ensureFileSync("test.b");
     symlinkSync("test.a", "test");
-    expect(() => abswap.swap({path:"test"})).toThrowError();
-  })
+    expect(() => abswap.swap({ path: "test" })).toThrowError();
+  });
 
   test("missing 'a' component throws an error", () => {
     ensureFileSync("test.b");
     symlinkSync("test.a", "test");
     symlinkSync("test.b", "test.inactive");
-    expect(() => abswap.swap({path:"test"})).toThrowError();
-  })
+    expect(() => abswap.swap({ path: "test" })).toThrowError();
+  });
 
   test("missing 'a' component throws an error", () => {
     ensureFileSync("test.a");
     symlinkSync("test.a", "test");
     symlinkSync("test.b", "test.inactive");
-    expect(() => abswap.swap({path:"test"})).toThrowError();
-  })
+    expect(() => abswap.swap({ path: "test" })).toThrowError();
+  });
 
   test("invalid 'active' symlink throws an error", () => {
     ensureFileSync("test.a");
     ensureFileSync("test.b");
     symlinkSync("invalid", "test");
     symlinkSync("test.b", "test.inactive");
-    expect(() => abswap.swap({path:"test"})).toThrowError();
-  })
+    expect(() => abswap.swap({ path: "test" })).toThrowError();
+  });
 
   test("invalid 'inactive' symlink throws an error", () => {
     ensureFileSync("test.a");
     ensureFileSync("test.b");
     symlinkSync("test.a", "test");
     symlinkSync("invalid", "test.inactive");
-    expect(() => abswap.swap({path:"test"})).toThrowError();
-  })
+    expect(() => abswap.swap({ path: "test" })).toThrowError();
+  });
 
   test("symlinks targets are equal throws an error", () => {
     ensureFileSync("test.a");
     ensureFileSync("test.b");
     symlinkSync("test.a", "test");
     symlinkSync("test.a", "test.inactive");
-    expect(() => abswap.swap({path:"test"})).toThrowError();
-  })
+    expect(() => abswap.swap({ path: "test" })).toThrowError();
+  });
 
   test("invalid a/b structure throws an error", () => {
     ensureFileSync("test.a");
     ensureDirSync("test.b");
     symlinkSync("test.a", "test");
     symlinkSync("test.b", "test.inactive");
-    expect(() => abswap.swap({path: "test"})).toThrowError();
-  })
+    expect(() => abswap.swap({ path: "test" })).toThrowError();
+  });
 });
