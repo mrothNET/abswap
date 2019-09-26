@@ -15,14 +15,14 @@ const testData = [
 ];
 
 describe("getFiletype()", () => {
-  test.each(testData)("returns %p for: '%s'", (expected, path) => {
+  test.each(testData)("returns %p for: '%s'", async (expected, path) => {
     expect(typeof path).toBe("string");
     // @ts-ignore
-    expect(getFiletype(join(__dirname, "../..", path))).toBe(expected);
+    await expect(getFiletype(join(__dirname, "../..", path))).resolves.toBe(expected);
   });
 
-  test.each([undefined, null, "", true, false, 0, 1, {}, []])("throws an error for: %p", arg => {
+  test.each([undefined, null, "", true, false, 0, 1, {}, []])("throws an error for: %p", async arg => {
     // @ts-ignore
-    expect(() => getFiletype(arg)).toThrowError();
+    await expect(getFiletype(arg)).rejects.toThrowError();
   });
 });

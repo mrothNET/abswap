@@ -1,4 +1,4 @@
-import { readlinkSync, removeSync, renameSync, symlinkSync } from "fs-extra";
+import { readlink, remove, rename, symlink } from "fs-extra";
 import Names from "./names";
 
 export enum Selection {
@@ -6,19 +6,19 @@ export enum Selection {
   B = "B",
 }
 
-export function makeSelection(names: Names, select: Selection): void {
-  removeSync(names.inactive);
-  symlink(select === Selection.A ? names.basenameA : names.basenameB, names.active);
-  symlink(select === Selection.A ? names.basenameB : names.basenameA, names.inactive);
+export async function makeSelection(names: Names, select: Selection): Promise<void> {
+  await remove(names.inactive);
+  await safeSymlink(select === Selection.A ? names.basenameA : names.basenameB, names.active);
+  await safeSymlink(select === Selection.A ? names.basenameB : names.basenameA, names.inactive);
 }
 
-export function getSelection(names: Names): Selection {
-  const targetActive = readlinkSync(names.active);
+export async function getSelection(names: Names): Promise<Selection> {
+  const targetActive = await readlink(names.active);
   if (targetActive !== names.basenameA && targetActive !== names.basenameB) {
     throw new Error(`Symlink '${names.active}': Invalid target: '${targetActive}'.`);
   }
 
-  const targetInactive = readlinkSync(names.inactive);
+  const targetInactive = await readlink(names.inactive);
   if (targetInactive !== names.basenameA && targetInactive !== names.basenameB) {
     throw new Error(`Symlink '${names.inactive}': Invalid target: '${targetInactive}'.`);
   }
@@ -30,8 +30,8 @@ export function getSelection(names: Names): Selection {
   return targetActive === names.basenameA ? Selection.A : Selection.B;
 }
 
-function symlink(target: string, path: string): void {
+async function safeSymlink(target: string, path: string): Promise<void> {
   const temp = `${path}.___${Date.now()}___`;
-  symlinkSync(target, temp);
-  renameSync(temp, path);
+  await symlink(target, temp);
+  await rename(temp, path);
 }

@@ -5,18 +5,18 @@ import Names from "../names";
 const testdir = "../../testdata";
 
 describe("Selection", () => {
-  test("getSelection() should return Selection.A", () => {
+  test("getSelection() should return Selection.A", async () => {
     const names = new Names(join(__dirname, testdir, "selection-a"));
-    expect(getSelection(names)).toBe(Selection.A);
+    expect(await getSelection(names)).toBe(Selection.A);
   });
 
-  test("getSelection() should return Selection.B", () => {
+  test("getSelection() should return Selection.B", async () => {
     const names = new Names(join(__dirname, testdir, "selection-b"));
-    expect(getSelection(names)).toBe(Selection.B);
+    expect(await getSelection(names)).toBe(Selection.B);
   });
 
-  test("getSelection() should throw", () => {
+  test("getSelection() should throw", async () => {
     const names = new Names(join(__dirname, testdir, "symlink"));
-    expect(() => getSelection(names)).toThrowError();
+    await expect(getSelection(names)).rejects.toThrowError();
   });
 });

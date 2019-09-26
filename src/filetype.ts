@@ -1,4 +1,4 @@
-import { lstatSync } from "fs";
+import { lstat } from "fs-extra";
 
 export enum Filetype {
   Unknown,
@@ -8,13 +8,13 @@ export enum Filetype {
   Symlink,
 }
 
-export function getFiletype(path: string): Filetype {
+export async function getFiletype(path: string): Promise<Filetype> {
   if (path === "") {
     throw new Error("Empty path not allowed");
   }
 
   try {
-    const stat = lstatSync(path);
+    const stat = await lstat(path);
 
     if (stat.isFile()) {
       return Filetype.File;
