@@ -6,21 +6,15 @@ import version from "./version";
 
 async function cli(argv: string[]) {
   let path: string | undefined;
-  let initialize = false;
-  let undo = false;
-
-  const opts: {
-    mode?: "file" | "directory";
-    copy?: boolean;
-  } = {};
+  let [init, undo, file, directory, copy] = [false, false, false, false, false];
 
   program
     .name("abswap")
     .version(version)
-    .option("--init", "initialize a path for a/b swap", () => (initialize = true))
-    .option("--copy", "copy existing path to inactive selection on initialize", () => (opts.copy = true))
-    .option("--file", "expect (or create) regular files as targets", () => (opts.mode = "file"))
-    .option("--directory", "expect (or create) directory as targets", () => (opts.mode = "directory"))
+    .option("--init", "initialize a path for a/b swap", () => (init = true))
+    .option("--copy", "copy existing path to inactive selection on initialize", () => (copy = true))
+    .option("--file", "expect (or create) regular files as targets", () => (file = true))
+    .option("--directory", "expect (or create) directory as targets", () => (directory = true))
     .option("--undo", "delete a/b structure und keep active selection", () => (undo = true))
     .arguments("<path>")
     .action(arg => (path = arg))
@@ -31,14 +25,12 @@ async function cli(argv: string[]) {
     process.exit(1);
   } else {
     try {
-      const args = { path, ...opts };
-
-      if (initialize) {
-        await abswap.init(args);
+      if (init) {
+        await abswap.init(path, { file, directory, copy });
       } else if (undo) {
-        await abswap.undo(args);
+        await abswap.undo(path, { file, directory });
       } else {
-        await abswap.swap(args);
+        await abswap.swap(path, { file, directory });
       }
     } catch (err) {
       console.error(`abswap: ${err.message}`);

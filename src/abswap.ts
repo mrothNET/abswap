@@ -3,11 +3,14 @@ import { Filetype, getFiletype } from "./filetype";
 import Names from "./names";
 import { getSelection, makeSelection, Selection } from "./selection";
 
-export type Arguments = {
-  path: string;
-  mode?: "file" | "directory";
+export interface Options {
+  file?: boolean;
+  directory?: boolean;
+}
+
+export interface InitOptions extends Options {
   copy?: boolean;
-};
+}
 
 enum InitMode {
   Unknown,
@@ -16,20 +19,20 @@ enum InitMode {
   Directory,
 }
 
-export async function init(args: Arguments): Promise<void> {
-  const names = new Names(args.path);
+export async function init(path: string, opts?: InitOptions): Promise<void> {
+  const names = new Names(path);
 
   const mode = await guessInitMode(names);
   switch (mode) {
     case InitMode.NonExistent:
-      return initNonexistent(names, args);
+      return initNonexistent(names, opts);
 
     case InitMode.File:
     case InitMode.Directory:
-      return initExisting(names, args, mode);
+      return initExisting(names, mode, opts);
 
     default:
-      throw new Error(`Cannot initialize '${args.path}': Invalid path entries or combinations.`);
+      throw new Error(`Cannot initialize '${path}': Invalid path entries or combinations.`);
   }
 }
 
@@ -57,22 +60,22 @@ async function guessInitMode(names: Names): Promise<InitMode> {
   }
 }
 
-async function initNonexistent(names: Names, args: Arguments): Promise<void> {
-  const ensure = args.mode === "file" ? ensureFile : ensureDir;
+async function initNonexistent(names: Names, opts?: InitOptions): Promise<void> {
+  const ensure = opts && opts.file ? ensureFile : ensureDir;
   await Promise.all([ensure(names.a), ensure(names.b)]);
   return makeSelection(names, Selection.A);
 }
 
-async function initExisting(names: Names, args: Arguments, mode: InitMode): Promise<void> {
-  if (mode === InitMode.Directory && args.mode === "file") {
+async function initExisting(names: Names, mode: InitMode, opts?: InitOptions): Promise<void> {
+  if (mode === InitMode.Directory && opts && opts.file) {
     throw new Error(`Directory '${names.active}': Expected to be a regular file.`);
   }
 
-  if (mode === InitMode.File && args.mode === "directory") {
+  if (mode === InitMode.File && opts && opts.directory) {
     throw new Error(`File '${names.active}': Expected to be a directory.`);
   }
 
-  if (args.copy) {
+  if (opts && opts.copy) {
     await copy(names.active, names.b, { overwrite: false, errorOnExist: true, preserveTimestamps: true });
   } else if (mode === InitMode.Directory) {
     await ensureDir(names.b);
@@ -84,9 +87,9 @@ async function initExisting(names: Names, args: Arguments, mode: InitMode): Prom
   return makeSelection(names, Selection.A);
 }
 
-export async function undo(args: Arguments): Promise<void> {
-  const names = new Names(args.path);
-  await verifyAB(names, args.mode);
+export async function undo(path: string, opts?: Options): Promise<void> {
+  const names = new Names(path);
+  await verifyAB(names, opts);
 
   const selection = await getSelection(names);
 
@@ -99,28 +102,23 @@ export async function undo(args: Arguments): Promise<void> {
   return rename(selection === Selection.A ? names.a : names.b, names.active);
 }
 
-export async function swap(args: Arguments): Promise<void> {
-  const names = new Names(args.path);
-  await verifyAB(names, args.mode);
+export async function swap(path: string, opts?: Options): Promise<void> {
+  const names = new Names(path);
+  await verifyAB(names, opts);
   return makeSelection(names, (await getSelection(names)) === Selection.A ? Selection.B : Selection.A);
 }
 
-async function verifyAB(names: Names, mode: "file" | "directory" | undefined): Promise<void> {
-  switch (mode) {
-    case "file":
-      await Promise.all([verifyRequiredFile(names.a), verifyRequiredFile(names.b)]);
-      break;
-
-    case "directory":
-      await Promise.all([verifyRequiredDirectory(names.a), verifyRequiredDirectory(names.b)]);
-      break;
-
-    default:
-      await Promise.all([verifyRequiredPath(names.a), verifyRequiredPath(names.b)]);
-      const [typeA, typeB] = await Promise.all([getFiletype(names.a), getFiletype(names.b)]);
-      if (typeA !== typeB) {
-        throw new Error(`Path '${names.a}' and '${names.b}': Different file types`);
-      }
+async function verifyAB(names: Names, opts?: Options): Promise<void> {
+  if (opts && opts.file) {
+    await Promise.all([verifyRequiredFile(names.a), verifyRequiredFile(names.b)]);
+  } else if (opts && opts.directory) {
+    await Promise.all([verifyRequiredDirectory(names.a), verifyRequiredDirectory(names.b)]);
+  } else {
+    await Promise.all([verifyRequiredPath(names.a), verifyRequiredPath(names.b)]);
+    const [typeA, typeB] = await Promise.all([getFiletype(names.a), getFiletype(names.b)]);
+    if (typeA !== typeB) {
+      throw new Error(`Path '${names.a}' and '${names.b}': Different file types`);
+    }
   }
 }
 
