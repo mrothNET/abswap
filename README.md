@@ -19,7 +19,7 @@
 | `npm install --global abswap` | `yarn global add abswap` |
 
 
-## Usage
+## CLI Usage
 
 ```
 Usage: abswap [options] <path>
@@ -34,8 +34,30 @@ Options:
   -h, --help     output usage information
 ```
 
+## Programmatic Usage
+
+```javascript
+const { init, swap, undo } = require("abswap");
+
+const PATH = "/tmp/example-path";
+
+async function demo() {
+  // Initialize a/b structure
+  await init(PATH, { directory: true, copy: true });
+
+  // Swap symlinks pointing to 'a' and 'b'.
+  await swap(PATH);
+
+  // Undo a/b structure and keep current selected directory.
+  await undo(PATH);
+}
+```
+
 
 ## Changelog
+
+**`v2.0.0`**
+  - Complete asynchronous interface using promises.
 
 **`v1.0.0`**
   - New option `--undo` to convert a/b structure back to a simple file or directory.
