@@ -1,7 +1,16 @@
-import { readFileSync } from "fs";
+import { readFile } from "fs-extra";
 import { join } from "path";
 
-const path = join(__dirname, "../package.json")
-const { version } = JSON.parse(readFileSync(path, {encoding: "utf-8"}));
+let version: string | undefined;
 
-export default version;
+export async function getVersion(): Promise<string> {
+  if (!version) {
+    const path = join(__dirname, "../package.json");
+    const json = await readFile(path, { encoding: "utf-8" });
+    version = JSON.parse(json).version;
+  }
+  if (!version) {
+    throw new Error("Version of abswap unknown.");
+  }
+  return version;
+}
