@@ -6,5 +6,5 @@ import { verifyAB } from "./verifyAB";
 export async function swap(path: string, opts?: Options): Promise<void> {
   const names = new Names(path);
   await verifyAB(names, opts);
-  return makeSelection(names, (await getSelection(names)) === Selection.A ? Selection.B : Selection.A);
+  await makeSelection(names, (await getSelection(names)) === Selection.A ? Selection.B : Selection.A);
 }

@@ -16,5 +16,5 @@ export async function undo(path: string, opts?: Options): Promise<void> {
     remove(names.active),
   ]);
 
-  return rename(selection === Selection.A ? names.a : names.b, names.active);
+  await rename(selection === Selection.A ? names.a : names.b, names.active);
 }

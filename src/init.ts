@@ -29,11 +29,9 @@ export async function init(path: string, opts?: InitOptions): Promise<void> {
 }
 
 async function guessInitMode(names: Names): Promise<InitMode> {
-  if (
-    (await getFiletype(names.a)) !== Filetype.Nonexistent ||
-    (await getFiletype(names.b)) !== Filetype.Nonexistent ||
-    (await getFiletype(names.inactive)) !== Filetype.Nonexistent
-  ) {
+  const filetypes = await Promise.all([names.a, names.b, names.inactive].map(getFiletype));
+
+  if (filetypes.some(ft => ft !== Filetype.Nonexistent)) {
     return InitMode.Unknown;
   }
 
@@ -55,7 +53,7 @@ async function guessInitMode(names: Names): Promise<InitMode> {
 async function initNonexistent(names: Names, opts?: InitOptions): Promise<void> {
   const ensure = opts && opts.file ? ensureFile : ensureDir;
   await Promise.all([ensure(names.a), ensure(names.b)]);
-  return makeSelection(names, Selection.A);
+  await makeSelection(names, Selection.A);
 }
 
 async function initExisting(names: Names, mode: InitMode, opts?: InitOptions): Promise<void> {
@@ -76,5 +74,5 @@ async function initExisting(names: Names, mode: InitMode, opts?: InitOptions): P
   }
 
   await rename(names.active, names.a);
-  return makeSelection(names, Selection.A);
+  await makeSelection(names, Selection.A);
 }
