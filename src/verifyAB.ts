@@ -5,11 +5,9 @@ import { Options } from "./options";
 export async function verifyAB(names: Names, opts?: Options): Promise<void> {
   if (opts && opts.file) {
     await Promise.all([verifyRequiredFile(names.a), verifyRequiredFile(names.b)]);
-  }
-  else if (opts && opts.directory) {
+  } else if (opts && opts.directory) {
     await Promise.all([verifyRequiredDirectory(names.a), verifyRequiredDirectory(names.b)]);
-  }
-  else {
+  } else {
     await Promise.all([verifyRequiredPath(names.a), verifyRequiredPath(names.b)]);
     const [typeA, typeB] = await Promise.all([getFiletype(names.a), getFiletype(names.b)]);
     if (typeA !== typeB) {

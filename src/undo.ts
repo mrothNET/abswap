@@ -1,4 +1,4 @@
-import {remove, rename } from "fs-extra";
+import { remove, rename } from "fs-extra";
 import Names from "./names";
 import { Options } from "./options";
 import { getSelection, Selection } from "./selection";
