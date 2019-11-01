@@ -1,6 +1,6 @@
 {
   "name": "abswap",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "Swap a/b directories or files using symlinks",
   "author": "Michael Roth <mail@mroth.net>",
   "license": "MIT",
