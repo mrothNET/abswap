@@ -56,6 +56,9 @@ async function demo() {
 
 ## Changelog
 
+**`v2.1.0`**
+  - Version is read asynchronously and only on demand from `package.json`.
+
 **`v2.0.0`**
   - Complete asynchronous interface using promises.
 
