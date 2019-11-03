@@ -1,8 +1,10 @@
 import { copy, ensureDir, ensureFile, rename } from "fs-extra";
-import { Filetype, getFiletype } from "./filetype";
-import Names from "./names";
-import { InitOptions } from "./options";
-import { makeSelection, Selection } from "./selection";
+import { Filetype, getFiletype, makeSelection, Names, Selection } from "./core";
+import { Options } from "./options";
+
+export interface InitOptions extends Options {
+  copy?: boolean;
+}
 
 enum InitMode {
   Unknown,

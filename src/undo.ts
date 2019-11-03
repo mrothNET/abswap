@@ -1,10 +1,11 @@
 import { remove, rename } from "fs-extra";
-import Names from "./names";
+import { getSelection, Names, Selection } from "./core";
 import { Options } from "./options";
-import { getSelection, Selection } from "./selection";
 import { verifyAB } from "./verifyAB";
 
-export async function undo(path: string, opts?: Options): Promise<void> {
+export type UndoOptions = Options;
+
+export async function undo(path: string, opts?: UndoOptions): Promise<void> {
   const names = new Names(path);
   await verifyAB(names, opts);
 

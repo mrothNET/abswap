@@ -1,5 +1,5 @@
 import { readlink, remove, rename, symlink } from "fs-extra";
-import Names from "./names";
+import { Names } from "./names";
 
 export enum Selection {
   A = "A",

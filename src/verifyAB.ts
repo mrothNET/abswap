@@ -1,8 +1,9 @@
-import { Filetype, getFiletype } from "./filetype";
-import Names from "./names";
+import { Filetype, getFiletype, Names } from "./core";
 import { Options } from "./options";
 
-export async function verifyAB(names: Names, opts?: Options): Promise<void> {
+export type VerifyOptions = Options;
+
+export async function verifyAB(names: Names, opts?: VerifyOptions): Promise<void> {
   if (opts && opts.file) {
     await Promise.all([verifyRequiredFile(names.a), verifyRequiredFile(names.b)]);
   } else if (opts && opts.directory) {

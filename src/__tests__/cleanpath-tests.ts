@@ -1,4 +1,4 @@
-import cleanpath from "../cleanpath";
+import { cleanpath } from "../names";
 
 const testcases = [
   ["/", "/"],

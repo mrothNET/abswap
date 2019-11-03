@@ -1,7 +1,6 @@
-import { basename } from "path";
-import cleanpath from "./cleanpath";
+import { basename, join } from "path";
 
-export default class Names {
+export class Names {
   public readonly active: string;
   public readonly inactive: string;
 
@@ -31,4 +30,11 @@ export default class Names {
     this.basenameA = basename(this.a);
     this.basenameB = basename(this.b);
   }
+}
+
+export function cleanpath(path: string): string {
+  if (path === "" || typeof path !== "string") {
+    throw new Error("Invalid path argument");
+  }
+  return join(path, ".");
 }

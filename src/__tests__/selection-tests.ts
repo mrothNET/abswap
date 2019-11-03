@@ -1,6 +1,6 @@
 import { join } from "path";
+import { Names } from "../names";
 import { getSelection, Selection } from "../selection";
-import Names from "../names";
 
 const testdir = "../../testdata";
 

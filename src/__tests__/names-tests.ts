@@ -1,4 +1,4 @@
-import Names from "../names";
+import { Names } from "../names";
 
 function makeTestcase(path: string, base: string, basename?: string) {
   return [
