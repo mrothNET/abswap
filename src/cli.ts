@@ -5,7 +5,7 @@ import * as abswap from "./abswap";
 
 async function cli(argv: string[]): Promise<number> {
   let path: string | undefined;
-  let version, init, undo, file, directory, copy;
+  let version, init, undo, file, directory, copy, verify;
 
   program
     .name("abswap")
@@ -15,6 +15,7 @@ async function cli(argv: string[]): Promise<number> {
     .option("--file", "expect (or create) regular files as targets", () => (file = true))
     .option("--directory", "expect (or create) directory as targets", () => (directory = true))
     .option("--undo", "delete a/b structure und keep active selection", () => (undo = true))
+    .option("--verify", "verify a/b structure for consistence", () => (verify = true))
     .arguments("<path>")
     .action(arg => (path = arg))
     .parse(argv);
@@ -30,7 +31,9 @@ async function cli(argv: string[]): Promise<number> {
   }
 
   try {
-    if (init) {
+    if (verify) {
+      await abswap.verify(path, { file, directory });
+    } else if (init) {
       await abswap.init(path, { file, directory, copy });
     } else if (undo) {
       await abswap.undo(path, { file, directory });

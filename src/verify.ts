@@ -3,6 +3,11 @@ import { Options } from "./options";
 
 export type VerifyOptions = Options;
 
+export async function verify(path: string, opts: VerifyOptions): Promise<void> {
+  const names = new Names(path);
+  await verifyAB(names, opts);
+}
+
 export async function verifyAB(names: Names, opts?: VerifyOptions): Promise<void> {
   if (opts && opts.file) {
     await Promise.all([verifyRequiredFile(names.a), verifyRequiredFile(names.b)]);

@@ -31,6 +31,7 @@ Options:
   --file         expect (or create) regular files as targets
   --directory    expect (or create) directory as targets
   --undo         delete a/b structure und keep active selection
+  --verify       verify a/b structure for consistence
   -h, --help     output usage information
 ```
 
@@ -55,6 +56,9 @@ async function demo() {
 
 
 ## Changelog
+
+**`v2.2.0`**
+  - New option `--verify` to check for a valid a/b structure.
 
 **`v2.1.0`**
   - Version is read asynchronously and only on demand from `package.json`.
