@@ -14,7 +14,7 @@ async function cli(argv: string[]): Promise<number> {
     .option("--copy", "copy existing path to inactive selection on initialize", () => (copy = true))
     .option("--file", "expect (or create) regular files as targets", () => (file = true))
     .option("--directory", "expect (or create) directory as targets", () => (directory = true))
-    .option("--undo", "delete a/b structure und keep active selection", () => (undo = true))
+    .option("--undo", "delete a/b structure and keep active selection", () => (undo = true))
     .option("--verify", "verify a/b structure for consistence", () => (verify = true))
     .arguments("<path>")
     .action(arg => (path = arg))

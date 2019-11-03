@@ -30,7 +30,7 @@ Options:
   --copy         copy existing path to inactive selection on initialize
   --file         expect (or create) regular files as targets
   --directory    expect (or create) directory as targets
-  --undo         delete a/b structure und keep active selection
+  --undo         delete a/b structure and keep active selection
   --verify       verify a/b structure for consistence
   -h, --help     output usage information
 ```
