@@ -26,14 +26,14 @@
   "devDependencies": {
     "@types/fs-extra": "^8.0.0",
     "@types/jest": "^24.0.18",
-    "@types/node": "^12.7.3",
+    "@types/node": "^12.12.5",
     "jest": "^24.9.0",
     "jest-junit": "^9.0.0",
     "prettier": "^1.18.2",
     "ts-jest": "^24.0.2",
-    "tslint": "^5.19.0",
+    "tslint": "^5.20.1",
     "tslint-config-prettier": "^1.18.0",
-    "typescript": "^3.6.2"
+    "typescript": "^3.7.2"
   },
   "dependencies": {
     "commander": "^4.0.0",
