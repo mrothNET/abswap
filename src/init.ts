@@ -52,21 +52,21 @@ async function guessInitMode(names: Names): Promise<InitMode> {
 }
 
 async function initNonexistent(names: Names, opts?: InitOptions): Promise<void> {
-  const ensure = opts && opts.file ? ensureFile : ensureDir;
+  const ensure = opts?.file ? ensureFile : ensureDir;
   await Promise.all([ensure(names.a), ensure(names.b)]);
   await makeSelection(names, Selection.A);
 }
 
 async function initExisting(names: Names, mode: InitMode, opts?: InitOptions): Promise<void> {
-  if (mode === InitMode.Directory && opts && opts.file) {
+  if (mode === InitMode.Directory && opts?.file) {
     throw new Error(`Directory '${names.active}': Expected to be a regular file.`);
   }
 
-  if (mode === InitMode.File && opts && opts.directory) {
+  if (mode === InitMode.File && opts?.directory) {
     throw new Error(`File '${names.active}': Expected to be a directory.`);
   }
 
-  if (opts && opts.copy) {
+  if (opts?.copy) {
     await copy(names.active, names.b, { overwrite: false, errorOnExist: true, preserveTimestamps: true });
   } else if (mode === InitMode.Directory) {
     await ensureDir(names.b);

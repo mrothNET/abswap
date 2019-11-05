@@ -8,9 +8,9 @@ export async function verify(path: string, opts: VerifyOptions): Promise<void> {
 }
 
 export async function verifyAB(names: Names, opts?: VerifyOptions): Promise<void> {
-  if (opts && opts.file) {
+  if (opts?.file) {
     await Promise.all([verifyRequiredFile(names.a), verifyRequiredFile(names.b)]);
-  } else if (opts && opts.directory) {
+  } else if (opts?.directory) {
     await Promise.all([verifyRequiredDirectory(names.a), verifyRequiredDirectory(names.b)]);
   } else {
     await Promise.all([verifyRequiredPath(names.a), verifyRequiredPath(names.b)]);
