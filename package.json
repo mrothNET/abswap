@@ -12,7 +12,7 @@
   "bin": {
     "abswap": "lib/cli.js"
   },
-  "main": "lib/abswap.js",
+  "main": "lib/abswap/index.js",
   "scripts": {
     "build": "tsc",
     "test": "jest --all",

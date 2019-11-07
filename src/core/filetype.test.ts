@@ -1,5 +1,5 @@
 import { join } from "path";
-import { Filetype, getFiletype } from "../filetype";
+import { Filetype, getFiletype } from "./filetype";
 
 function testdir(path: string) {
   return join("./testdata", path);

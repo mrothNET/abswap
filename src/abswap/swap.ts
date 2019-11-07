@@ -1,4 +1,4 @@
-import { getSelection, makeSelection, Names, Options, Selection } from "./core";
+import { getSelection, makeSelection, Names, Options, Selection } from "../core";
 import { verifyAB } from "./verify";
 
 export type SwapOptions = Options;

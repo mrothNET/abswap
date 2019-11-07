@@ -12,8 +12,8 @@ import {
 import { tmpdir } from "os";
 import { join } from "path";
 import { chdir, cwd } from "process";
-import * as abswap from "../abswap";
-import { Filetype, getFiletype } from "../filetype";
+import * as abswap from ".";
+import { Filetype, getFiletype } from "../core/filetype";
 
 let savedWorkingDirectory = "";
 let actualWorkingDirectory = "";

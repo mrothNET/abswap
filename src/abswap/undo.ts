@@ -1,5 +1,5 @@
 import { remove, rename } from "fs-extra";
-import { getSelection, Names, Options, Selection } from "./core";
+import { getSelection, Names, Options, Selection } from "../core";
 import { verifyAB } from "./verify";
 
 export type UndoOptions = Options;
