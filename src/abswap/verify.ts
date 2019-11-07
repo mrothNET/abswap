@@ -1,4 +1,5 @@
-import { Filetype, getFiletype, Names, Options } from "../core";
+import { Filetype, getFiletype, Names } from "../core";
+import { Options } from "./options";
 
 export type VerifyOptions = Options;
 

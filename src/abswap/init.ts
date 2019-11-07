@@ -1,5 +1,6 @@
 import { copy, ensureDir, ensureFile, rename } from "fs-extra";
-import { Filetype, getFiletype, makeSelection, Names, Options, Selection } from "../core";
+import { Filetype, getFiletype, makeSelection, Names, Selection } from "../core";
+import { Options } from "./options";
 
 export interface InitOptions extends Options {
   copy?: boolean;
