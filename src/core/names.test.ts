@@ -1,5 +1,7 @@
 import { Names } from "./names";
 
+type TestCase = { active: string, inactive: string, a: string, b: string, basenameA: string, basenameB: string };
+
 function makeTestcase(path: string, base: string, basename?: string) {
   return [
     path,
@@ -13,7 +15,7 @@ function makeTestcase(path: string, base: string, basename?: string) {
       basenameA: (basename || base) + ".a",
       basenameB: (basename || base) + ".b",
     },
-  ];
+  ] as [string, TestCase];
 }
 
 const testcases = [
@@ -28,14 +30,12 @@ describe("Names", () => {
   test.each(testcases)("Names(%p)", (path, expected) => {
     expect(typeof path).toBe("string");
     expect(typeof expected).toBe("object");
-    // @ts-ignore
     expect(new Names(path)).toMatchObject<Names>(expected);
   });
 
   const illegals = ["/", ".", "..", "", "dir/..", undefined, null, false, true, 0, 1, [], {}];
 
   test.each(illegals)("Names(%p) should throw an error", arg => {
-    // @ts-ignore
-    expect(() => names(arg)).toThrowError();
+    expect(() => new Names(arg as string)).toThrowError();
   });
 });

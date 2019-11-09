@@ -5,7 +5,7 @@ function testdir(path: string) {
   return join("./testdata", path);
 }
 
-const testData = [
+const testData: Array<[Filetype, string]> = [
   [Filetype.Directory, "/"],
   [Filetype.Directory, testdir("directory")],
   [Filetype.File, testdir("file")],
@@ -17,12 +17,10 @@ const testData = [
 describe("getFiletype()", () => {
   test.each(testData)("returns %p for: '%s'", async (expected, path) => {
     expect(typeof path).toBe("string");
-    // @ts-ignore
     await expect(getFiletype(join(__dirname, "../..", path))).resolves.toBe(expected);
   });
 
   test.each([undefined, null, "", true, false, 0, 1, {}, []])("throws an error for: %p", async arg => {
-    // @ts-ignore
-    await expect(getFiletype(arg)).rejects.toThrowError();
+    await expect(getFiletype(arg as string)).rejects.toThrowError();
   });
 });
