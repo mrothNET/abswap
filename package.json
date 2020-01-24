@@ -5,8 +5,10 @@
   "author": "Michael Roth <mail@mroth.net>",
   "license": "MIT",
   "files": [
-    "lib/**/*",
-    "assets/**/*",
+    "src",
+    "lib",
+    "!lib/tsconfig.tsbuildinfo",
+    "assets",
     "yarn.lock"
   ],
   "bin": {
