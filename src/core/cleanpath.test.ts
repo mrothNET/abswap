@@ -73,7 +73,7 @@ describe("Cleanpath", () => {
     expect(cleanpath(path)).toBe(expected);
   });
 
-  test.each([undefined, null, "", false, true, 0, 1, [], {}])("cleanpath(%p) should throw an error", arg => {
+  test.each([undefined, null, "", false, true, 0, 1, [], {}])("cleanpath(%p) should throw an error", (arg) => {
     expect(() => cleanpath(arg as string)).toThrowError();
   });
 });

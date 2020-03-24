@@ -20,7 +20,7 @@ describe("getFiletype()", () => {
     await expect(getFiletype(join(__dirname, "../..", path))).resolves.toBe(expected);
   });
 
-  test.each([undefined, null, "", true, false, 0, 1, {}, []])("throws an error for: %p", async arg => {
+  test.each([undefined, null, "", true, false, 0, 1, {}, []])("throws an error for: %p", async (arg) => {
     await expect(getFiletype(arg as string)).rejects.toThrowError();
   });
 });

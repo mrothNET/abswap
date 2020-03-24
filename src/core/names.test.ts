@@ -1,6 +1,6 @@
 import { Names } from "./names";
 
-type TestCase = { active: string, inactive: string, a: string, b: string, basenameA: string, basenameB: string };
+type TestCase = { active: string; inactive: string; a: string; b: string; basenameA: string; basenameB: string };
 
 function makeTestcase(path: string, base: string, basename?: string) {
   return [
@@ -35,7 +35,7 @@ describe("Names", () => {
 
   const illegals = ["/", ".", "..", "", "dir/..", undefined, null, false, true, 0, 1, [], {}];
 
-  test.each(illegals)("Names(%p) should throw an error", arg => {
+  test.each(illegals)("Names(%p) should throw an error", (arg) => {
     expect(() => new Names(arg as string)).toThrowError();
   });
 });

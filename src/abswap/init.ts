@@ -26,7 +26,7 @@ export async function init(path: string, opts?: InitOptions): Promise<void> {
 async function guessInitMode(names: Names): Promise<InitMode> {
   const filetypes = await Promise.all([names.a, names.b, names.inactive].map(getFiletype));
 
-  if (filetypes.some(ft => ft !== Filetype.Nonexistent)) {
+  if (filetypes.some((ft) => ft !== Filetype.Nonexistent)) {
     throw new Error("File or directory to create already exists.");
   }
 

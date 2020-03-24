@@ -17,7 +17,7 @@ async function cli(argv: string[]): Promise<number> {
     .option("--undo", "delete a/b structure and keep active selection", () => (undo = true))
     .option("--verify", "verify a/b structure for consistence", () => (verify = true))
     .arguments("<path>")
-    .action(arg => (path = arg))
+    .action((arg) => (path = arg))
     .parse(argv);
 
   if (version) {
