@@ -77,8 +77,8 @@ describe("abswap", () => {
     await expectAB(Filetype.File, "a");
     expect(await getFiletype("test.a")).toBe(Filetype.File);
     expect(await getFiletype("test.b")).toBe(Filetype.File);
-    expect(readFileSync("test.a", "ASCII")).toBe("X");
-    expect(readFileSync("test.b", "ASCII")).toBe("");
+    expect(readFileSync("test.a", { encoding: "ascii" })).toBe("X");
+    expect(readFileSync("test.b", { encoding: "ascii" })).toBe("");
   });
 
   test("copy existing directory is working", async () => {
@@ -94,8 +94,8 @@ describe("abswap", () => {
     await abswap.init("test", { copy: true });
     expect(await getFiletype("test.a")).toBe(Filetype.File);
     expect(await getFiletype("test.b")).toBe(Filetype.File);
-    expect(readFileSync("test.a", "ASCII")).toBe("X");
-    expect(readFileSync("test.b", "ASCII")).toBe("X");
+    expect(readFileSync("test.a", { encoding: "ascii" })).toBe("X");
+    expect(readFileSync("test.b", { encoding: "ascii" })).toBe("X");
   });
 
   test("swap directories is working", async () => {
@@ -123,13 +123,13 @@ describe("abswap", () => {
 
     await abswap.swap("test");
     await expectAB(Filetype.File, "b");
-    expect(readFileSync("test", "ASCII")).toBe("B");
-    expect(readFileSync("test.inactive", "ASCII")).toBe("A");
+    expect(readFileSync("test", { encoding: "ascii" })).toBe("B");
+    expect(readFileSync("test.inactive", { encoding: "ascii" })).toBe("A");
 
     await abswap.swap("test");
     await expectAB(Filetype.File, "a");
-    expect(readFileSync("test", "ASCII")).toBe("A");
-    expect(readFileSync("test.inactive", "ASCII")).toBe("B");
+    expect(readFileSync("test", { encoding: "ascii" })).toBe("A");
+    expect(readFileSync("test.inactive", { encoding: "ascii" })).toBe("B");
   });
 
   test("undo directory is working", async () => {
@@ -151,7 +151,7 @@ describe("abswap", () => {
     await abswap.swap("test");
     await abswap.undo("test");
     expect(await getFiletype("test")).toBe(Filetype.File);
-    expect(readFileSync("test", "ASCII")).toBe("B");
+    expect(readFileSync("test", { encoding: "ascii" })).toBe("B");
     expect(await getFiletype("test.inactive")).toBe(Filetype.Nonexistent);
     expect(await getFiletype("test.a")).toBe(Filetype.Nonexistent);
     expect(await getFiletype("test.b")).toBe(Filetype.Nonexistent);
