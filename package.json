@@ -17,9 +17,9 @@
   "main": "lib/abswap/index.js",
   "scripts": {
     "build": "tsc",
-    "test": "jest --all",
+    "test": "scripts/prepare-testdata && (jest --all; rm -rf testdata)",
     "watch": "jest --watch",
-    "clean": "rm -rf lib",
+    "clean": "rm -rf lib testdata",
     "format": "prettier --write 'src/**/*.ts'",
     "lint": "tslint -p .",
     "prepare": "npm run clean && npm run build",

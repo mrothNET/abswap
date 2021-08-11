@@ -1,0 +1,22 @@
+#!/bin/sh
+
+test -d testdata || (rm -f testdata && mkdir testdata)
+
+cd testdata
+
+test -d directory || (rm -f directory && mkdir directory)
+
+test -f file || (rm -f file && echo "Hello, World!" >file)
+
+for file in selection-a.a selection-a.b selection-b.a selection-b.b
+do
+  test -f $file || (rm -f $file && touch $file)
+done
+
+test -L selection-a || (rm -rf selection-a && ln -s selection-a.a selection-a)
+test -L selection-b || (rm -rf selection-b && ln -s selection-b.b selection-b)
+
+test -L selection-a.inactive || (rm -f selection-a.inactive && ln -s selection-a.b selection-a.inactive)
+test -L selection-b.inactive || (rm -f selection-b.inactive && ln -s selection-b.a selection-b.inactive)
+
+test -L symlink || (rm -f symlink && ln -s nonexistent symlink)

@@ -3,3 +3,5 @@ lib
 yarn-error.log
 testresults.xml
 junit.xml
+
+/testdata
