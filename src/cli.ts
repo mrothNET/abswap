@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import * as program from "commander";
+import { program } from "commander";
 import * as abswap from "./abswap";
 
 async function cli(argv: string[]): Promise<number> {
